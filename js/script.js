@@ -3,6 +3,7 @@ const addBtn = document.querySelector('[data-todo="add-btn"');
 const todoContainer = document.querySelector('[data-todo="container"');
 
 const ulElement = document.createElement('ul');
+ulElement.classList.add('to-dos');
 todoContainer.appendChild(ulElement);
 
 function createTodo() {
@@ -14,8 +15,10 @@ function createTodo() {
     toDo.innerText = input.value;
 
     const liEdit = document.createElement('button');
+    liEdit.classList.add('btn-edit');
     liEdit.innerText = 'Editar';
     const liRemove = document.createElement('button');
+    liRemove.classList.add('btn-remove');
     liRemove.innerText = 'Remover';
 
     liElement.appendChild(toDo);
