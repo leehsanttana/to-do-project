@@ -1,15 +1,34 @@
 const input = document.querySelector('[data-todo="input"');
 const addBtn = document.querySelector('[data-todo="add-btn"');
-const todoContainer = document.querySelector('[data-todo="container"');
+const mainContainer = document.querySelector('[data-todo="main-container"');
+const todoContainer = document.querySelector('[data-todo="to-do-container"');
 
 const ulElement = document.createElement('ul');
 ulElement.classList.add('to-dos');
-todoContainer.appendChild(ulElement);
+mainContainer.appendChild(ulElement);
+
+let active = false;
+
+function error(){
+    active = true;
+    const errorMsg = document.createElement('p');
+    errorMsg.classList.add('error-message');
+    errorMsg.innerText = 'Por favor, Insira um To-do!';
+    todoContainer.after(errorMsg);
+
+    setTimeout(() => {
+      errorMsg.classList.add('remove');
+      setTimeout(() => {
+        errorMsg.remove();
+      }, 500);
+      
+    }, 1000);
+}
 
 function createTodo() {
   if (input.value !== '') {
     const liElement = document.createElement('li');
-    ulElement.appendChild(liElement);
+    ulElement.appendChild(liElement); 
 
     const toDo = document.createElement('p');
     toDo.innerText = input.value;
@@ -29,58 +48,60 @@ function createTodo() {
     options.appendChild(liEdit);
     options.appendChild(liRemove);
 
-    let active = false;
-
     function editTodo() {
       if (!active) {
-        const optionEditTodo = document.createElement('div');
-        optionEditTodo.classList.add('options-edit-to-do');
-        liElement.appendChild(optionEditTodo);
+        const editTodo = document.createElement('div');
+        editTodo.classList.add('edit-to-do');
+        liElement.appendChild(editTodo);
 
         const liInput = document.createElement('input');
         liInput.setAttribute('type', 'text');
         liInput.value = toDo.innerText;
-        optionEditTodo.appendChild(liInput);
+        editTodo.appendChild(liInput);
 
-        const liSave = document.createElement('button');
-        liSave.classList.add('btn-save');
-        liSave.innerText = 'Salvar';
-        liInput.after(liSave);
+        const optionseditTodo = document.createElement('div');
+        optionseditTodo.classList.add('options-edit-to-do');
+        editTodo.appendChild(optionseditTodo);
 
         const liCancel = document.createElement('button');
         liCancel.classList.add('btn-cancel');
         liCancel.innerText = 'Cancelar';
-        liInput.after(liCancel, liSave);
+        optionseditTodo.appendChild(liCancel);
+
+        const liSave = document.createElement('button');
+        liSave.classList.add('btn-save');
+        liSave.innerText = 'Salvar';
+        optionseditTodo.appendChild(liSave);
 
         active = true;
 
-        function cancelEditTodo() {
-          optionEditTodo.classList.add('remove');
+        function canceleditTodo() {
+          editTodo.classList.add('remove');
           active = false;
           setTimeout(() => {
-            optionEditTodo.remove();
+            editTodo.remove();
           }, 500);
         }
 
-        function saveEditTodo() {
+        function saveeditTodo() {
           toDo.innerText = liInput.value;
           active = false;
           const divMsg = document.createElement('div');
           divMsg.classList.add('sussecs-message')
           divMsg.innerText = 'A alteração foi salva! 👍👍';
-          optionEditTodo.after(divMsg);
+          editTodo.after(divMsg);
           setTimeout(() => {
-            optionEditTodo.classList.add('remove');
+            editTodo.classList.add('remove');
             divMsg.classList.add('remove');
             setTimeout(() => {
-              optionEditTodo.remove();
+              editTodo.remove();
               divMsg.remove();
             }, 500);
           }, 2000);
         }        
 
-        liCancel.addEventListener('click', cancelEditTodo);
-        liSave.addEventListener('click', saveEditTodo);
+        liCancel.addEventListener('click', canceleditTodo);
+        liSave.addEventListener('click', saveeditTodo);
       }
     }
 
@@ -94,9 +115,12 @@ function createTodo() {
     liEdit.addEventListener('click', editTodo);
     liRemove.addEventListener('click', removeTodo);
   } else {
-    const errorMsg = document.createElement('p');
-    errorMsg.innerText = 'Por favor, Insira um To-do.';
-    input.after(errorMsg);
+    if (!active) {
+      error();
+      setTimeout(() => {
+        active = false;
+      }, 1000);
+    }  
   }
 }
 
